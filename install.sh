@@ -265,6 +265,7 @@ install() {
     log_package_installation "wget" "$MINECRAFT_LOG" # Log wget installation
 
     installWebUI
+    
     # Configure firewall based on user choice
     if false; then
         if [ -n "$FIREWALL_CHOICE" ]; then
@@ -383,10 +384,11 @@ EOF
         echo "'Listen 5000' added to $PORTS_FILE"
     fi
 
-    echo "Choose a firewall to install:"
-    echo "1) UFW"
-    echo "2) firewalld"
+    
     if [ -z "$CI_MODE" ]; then
+        echo "Choose a firewall to install:"
+        echo "1) UFW"
+        echo "2) firewalld"
         read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
     fi
     
@@ -394,12 +396,18 @@ EOF
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
         sudo apt install -y ufw > /dev/null 2>&1
+        echo "1"
         log_package_installation "ufw" "$FIREWALL_LOG"
+        echo "2"
         sudo ufw allow 5000 > /dev/null 2>&1
+        echo "3"
         #log_package_installation "ufw" "$MINECRAFT_LOG" # Log ufw installation
         sudo ufw allow 25565 > /dev/null 2>&1
+        echo "4"
         sudo ufw allow OpenSSH > /dev/null 2>&1
+        echo "5"
         sudo ufw --force enable > /dev/null 2>&1
+        echo "saiu"
     elif [ "$FIREWALL_CHOICE" -eq 2 ]; then
         echo "Configuring firewalld..."
         sudo apt install -y firewalld > /dev/null 2>&1
