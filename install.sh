@@ -134,14 +134,12 @@ installJar() {
 
     while true; do
         # Present options to the user
-        echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
-        echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
-        echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
-        echo -e "${YELLOW}4) fabric:${NC} Adds support for fabric mods (Will automatically install curl and jq if not installed already)"
-        echo -e "${NC}5) manual:${NC} Bring your own server .jar"
-
-        # Ask the user for their choice of server software
-        if [ -z "$SERVER_SOFTWARE_CHOICE" ]; then
+        if [ -z "$CI_MODE" ]; then
+            echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
+            echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
+            echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
+            echo -e "${YELLOW}4) fabric:${NC} Adds support for fabric mods (Will automatically install curl and jq if not installed already)"
+            echo -e "${NC}5) manual:${NC} Bring your own server .jar"
             read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
         fi
 
@@ -396,18 +394,11 @@ EOF
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
         sudo apt install -y ufw > /dev/null 2>&1
-        echo "1"
         log_package_installation "ufw" "$WEBUI_LOG"
-        echo "2"
         sudo ufw allow 5000 > /dev/null 2>&1
-        echo "3"
-        #log_package_installation "ufw" "$MINECRAFT_LOG" # Log ufw installation
         sudo ufw allow 25565 > /dev/null 2>&1
-        echo "4"
         sudo ufw allow OpenSSH > /dev/null 2>&1
-        echo "5"
         sudo ufw --force enable > /dev/null 2>&1
-        echo "saiu"
     elif [ "$FIREWALL_CHOICE" -eq 2 ]; then
         echo "Configuring firewalld..."
         sudo apt install -y firewalld > /dev/null 2>&1
