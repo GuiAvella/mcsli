@@ -147,13 +147,24 @@ installJar() {
         case $SERVER_SOFTWARE_CHOICE in
             1)
                 SERVER_SOFTWARE="paper"
+                PROJECT=$SERVER_SOFTWARE
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
-                echo -e "${BLUE}Version $SERVER_VERSION ${NC}"
-                latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
-                download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
-                SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
+                #echo -e "${BLUE}Version $SERVER_VERSION ${NC}"
+                #latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
+                latest_build=$(curl -s https://api.papermc.io/v2/projects/paper/versions/${SERVER_VERSION}/builds | \
+                    jq -r '.builds | map(select(.channel == "default") | .build) | .[-1]')
+                if [ "$LATEST_BUILD" != "null" ]; then
+                    JAR_NAME=${PROJECT}-${SERVER_VERSION}-${latest_build}.jar
+                    download_url="https://api.papermc.io/v2/projects/${PROJECT}/versions/${SERVER_VERSION}/builds/${latest_build}/downloads/${JAR_NAME}"
+                    SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
+                    # Download the latest Paper version
+                    #curl -o server.jar $PAPERMC_URL
+                    #echo "Download completed"
+                fi
+                #download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
+                
                 ;;
             2)
                 SERVER_SOFTWARE="purpur"
