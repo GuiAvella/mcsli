@@ -264,27 +264,30 @@ install() {
     sudo apt install -y wget > /dev/null 2>&1
     log_package_installation "wget" "$MINECRAFT_LOG" # Log wget installation
 
+    installWebUI
     # Configure firewall based on user choice
-    if [ -n "$FIREWALL_CHOICE" ]; then
-        if [ "$FIREWALL_CHOICE" -eq 1 ]; then
-            echo "Installing and configuring UFW..."
-            sudo apt install -y ufw > /dev/null 2>&1
-            log_package_installation "ufw" "$MINECRAFT_LOG" # Log ufw installation
-            sudo ufw allow 25565 > /dev/null 2>&1
-            sudo ufw allow OpenSSH > /dev/null 2>&1
-            sudo ufw --force enable > /dev/null 2>&1
-        elif [ "$FIREWALL_CHOICE" -eq 2 ]; then
-            echo "Installing and configuring firewalld..."
-            sudo apt install -y firewalld > /dev/null 2>&1
-            log_package_installation "firewalld" "$MINECRAFT_LOG" # Log firewalld installation
-            sudo systemctl start firewalld > /dev/null 2>&1
-            sudo systemctl enable firewalld > /dev/null 2>&1
-            sudo firewall-cmd --permanent --add-port=25565/tcp > /dev/null 2>&1
-            sudo firewall-cmd --permanent --add-service=ssh > /dev/null 2>&1
-            sudo firewall-cmd --reload > /dev/null 2>&1
-        else
-            echo "Invalid choice. Exiting."
-            exit 1
+    if false; then
+        if [ -n "$FIREWALL_CHOICE" ]; then
+            if [ "$FIREWALL_CHOICE" -eq 1 ]; then
+                echo "Installing and configuring UFW..."
+                sudo apt install -y ufw > /dev/null 2>&1
+                log_package_installation "ufw" "$MINECRAFT_LOG" # Log ufw installation
+                sudo ufw allow 25565 > /dev/null 2>&1
+                sudo ufw allow OpenSSH > /dev/null 2>&1
+                sudo ufw --force enable > /dev/null 2>&1
+            elif [ "$FIREWALL_CHOICE" -eq 2 ]; then
+                echo "Installing and configuring firewalld..."
+                sudo apt install -y firewalld > /dev/null 2>&1
+                log_package_installation "firewalld" "$MINECRAFT_LOG" # Log firewalld installation
+                sudo systemctl start firewalld > /dev/null 2>&1
+                sudo systemctl enable firewalld > /dev/null 2>&1
+                sudo firewall-cmd --permanent --add-port=25565/tcp > /dev/null 2>&1
+                sudo firewall-cmd --permanent --add-service=ssh > /dev/null 2>&1
+                sudo firewall-cmd --reload > /dev/null 2>&1
+            else
+                echo "Invalid choice. Exiting."
+                exit 1
+            fi
         fi
     fi
 
@@ -383,13 +386,20 @@ EOF
     echo "Choose a firewall to install:"
     echo "1) UFW"
     echo "2) firewalld"
-    read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    if [ -z "$CI_MODE" ]; then
+        read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    fi
+    
 
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
         sudo apt install -y ufw > /dev/null 2>&1
-        log_package_installation "ufw" "$WEBUI_LOG"
+        log_package_installation "ufw" "$FIREWALL_LOG"
         sudo ufw allow 5000 > /dev/null 2>&1
+        #log_package_installation "ufw" "$MINECRAFT_LOG" # Log ufw installation
+        sudo ufw allow 25565 > /dev/null 2>&1
+        sudo ufw allow OpenSSH > /dev/null 2>&1
+        sudo ufw --force enable > /dev/null 2>&1
     elif [ "$FIREWALL_CHOICE" -eq 2 ]; then
         echo "Configuring firewalld..."
         sudo apt install -y firewalld > /dev/null 2>&1
