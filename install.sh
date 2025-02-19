@@ -128,18 +128,17 @@ installJar() {
     # Use SERVER_SOFTWARE_CHOICE from CI_MODE if available
     if [ -n "$CI_MODE" ]; then
         echo -e "${GREEN}CI Mode: Using predefined server software choice $SERVER_SOFTWARE_CHOICE${NC}"
-    else
-        # Download the specific Minecraft server version
-        while true; do
-            # Present options to the user
-            echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
-            echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
-            echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
-            echo -e "${YELLOW}4) fabric:${NC} Adds support for fabric mods (Will automatically install curl and jq if not installed already)"
-            echo -e "${NC}5) manual:${NC} Bring your own server .jar"
     fi
     
     
+
+    while true; do
+        # Present options to the user
+        echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
+        echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
+        echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
+        echo -e "${YELLOW}4) fabric:${NC} Adds support for fabric mods (Will automatically install curl and jq if not installed already)"
+        echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
         if [ -z "$SERVER_SOFTWARE_CHOICE" ]; then
