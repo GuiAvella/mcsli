@@ -397,7 +397,7 @@ EOF
         echo "Configuring UFW..."
         sudo apt install -y ufw > /dev/null 2>&1
         echo "1"
-        log_package_installation "ufw" "$FIREWALL_LOG"
+        log_package_installation "ufw" "$WEBUI_LOG"
         echo "2"
         sudo ufw allow 5000 > /dev/null 2>&1
         echo "3"
