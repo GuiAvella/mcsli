@@ -150,7 +150,7 @@ installJar() {
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
-
+                echo -e "${BLUE}Version $SERVER_VERSION ${NC}"
                 latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
                 download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
                 SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
@@ -472,7 +472,7 @@ if [ -z "$CI_MODE" ]; then
               echo -e "${GREEN}$MINECRAFT_DIR already exists, updating server...${NC}"
               echo -e "${GREEN}Uninstalling other java versions...${NC}"
               echo -e "${YELLOW}Don't worry if you see 'Package 'openjdk-VERSION-jre-headless' is not installed, so not removed', this is normal${NC}"
-              sudo apt remove openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
+              sudo apt remove -y openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
               sudo rm -f "$MINECRAFT_LOG"
               installJava
               installJar
